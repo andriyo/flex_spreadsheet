@@ -1,0 +1,35 @@
+/* CSS file */
+LinkButton.sheetButton
+{
+	paddingTop: 0;
+	paddingBottom: 0;
+	paddingRight: 2;
+	paddingLeft: 2;
+}
+MenuBar
+{
+	borderColor: #FFFFFF;
+}
+Application
+{
+	backgroundGradientAlphas: 1.0, 1.0;
+	backgroundGradientColors: #FFFAE4, #E8E595;
+	paddingLeft: 10;
+	paddingTop: 10;
+	paddingRight: 10;
+	paddingBottom: 10;
+	themeColor: #40627C;
+	verticalGap: 2;	
+}
+ApplicationControlBar
+{
+	verticalAlign: middle;
+}
+Button
+{
+	paddingLeft: 2;
+	paddingRight: 2;
+	cornerRadius: 2;
+	paddingTop: 4;
+	paddingBottom: 4;
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:states>
+		<mx:State name="loggedIn">
+			<mx:AddChild relativeTo="{hbox1}" position="lastChild">
+				<mx:Button label="Logout"/>
+			</mx:AddChild>
+			<mx:RemoveChild target="{loginButton}"/>
+			<mx:AddChild relativeTo="{hbox1}" position="lastChild">
+				<mx:Button label="Account"/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{hbox1}" position="lastChild">
+				<mx:Button label="Save Online"/>
+			</mx:AddChild>
+			
+		</mx:State>
+	</mx:states>
+	<mx:Script>
+		<![CDATA[
+			import idubee.events.OptionsEvent;
+			import idubee.events.LoginEvent;
+			import idubee.events.FileEvent;
+			use namespace mx_internal;
+		]]>
+	</mx:Script>
+	<mx:HBox id="hbox1">
+		<mx:Button label="Login" enabled="true" icon="@Embed('/assets/img/icon_options.png')" 
+			id="loginButton" click="new LoginEvent(LoginEvent.OPEN_LOGIN).dispatch()"/>
+	</mx:HBox>
+	<mx:HBox>
+		<mx:Button label="New" icon="@Embed('/assets/img/icon_new.png')" 
+			click="new FileEvent(FileEvent.OPEN_NEW).dispatch()" styleName="fileNew"/>
+		<mx:PopUpMenuButton icon="@Embed('/assets/img/icon_open.png')"
+			
+			 itemClick="new FileEvent(event.item.eventType).dispatch()">
+			
+			<mx:dataProvider>
+				<mx:Object label="Open File" eventType="{FileEvent.OPEN_FILE}"/>
+				<mx:Object label="Open URL" eventType="{FileEvent.OPEN_URL}"/>
+			</mx:dataProvider>
+		</mx:PopUpMenuButton>
+		<mx:Button icon="@Embed('/assets/img/icon_save.png')"
+			label="Save" click="new FileEvent(FileEvent.SAVE_LOCAL).dispatch()"/>
+		<mx:Button icon="@Embed('/assets/img/icon_options.png')" 
+			label="Options" click="new OptionsEvent(OptionsEvent.OPEN_OPTIONS).dispatch()"/>
+	</mx:HBox>
+</mx:HBox>

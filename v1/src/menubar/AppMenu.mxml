@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"  width="100%" height="100%" xmlns:menubar="menubar.*">
+<mx:Metadata>
+	[Event(name="change", type="mx.events.IndexChangedEvent")]
+</mx:Metadata>
+<mx:Script>
+	<![CDATA[
+		import controls.BorderedTable;
+		
+		[Bindable]
+		public var table : BorderedTable;
+		
+	]]>
+</mx:Script>
+	<mx:TabNavigator width="100%" height="100%" change="dispatchEvent(event)">
+		<menubar:EditMenuBar table="{ table }"/>
+		<menubar:FileMenuBar/>
+		<mx:Canvas label="Analysis"/>
+		<mx:Canvas label="Share"/>
+		<mx:Canvas label="Print"/>
+	</mx:TabNavigator>
+</mx:HBox>

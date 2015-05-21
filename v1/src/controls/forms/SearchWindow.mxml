@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="420" height="294" 
+		   backgroundColor="#D0D0D0"
+		   cornerRadius="5" borderStyle="solid"
+		   dropShadowEnabled="true"
+		   shadowDirection="right"
+		   shadowDistance="4" 
+		   title="Search machine"
+		   showCloseButton="true"
+		   creationComplete="{ creationCompleteHandler() }">
+	<mx:Script>
+		<![CDATA[
+			import docManager.ReplaceEngine;
+			import mx.events.CloseEvent;
+			import docManager.SearchEngine;
+			import controls.tableClasses.Utils;
+			import controls.tableClasses.SparseMatrix;
+			import mx.controls.Alert;
+			import model.Spreadsheet;
+			import controls.BorderedTable;
+			import mx.managers.PopUpManager;
+			
+			public var table : BorderedTable;
+		    private var totalReplace : int;
+			
+			private function creationCompleteHandler():void
+			{
+				stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler)
+				addEventListener(CloseEvent.CLOSE, onCloseButtonClick);
+				searchTextInput.setFocus();
+			}
+			
+			private function onKeyUpHandler(event : KeyboardEvent):void
+			{
+				if (event.charCode == 27)
+				{
+					stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler);
+					PopUpManager.removePopUp(this);
+				}
+			}
+			
+			private function onCloseButtonClick(event : CloseEvent):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function doNext():void
+			{
+				SearchEngine.getSearchEngine().gotoNextResult();
+			}
+			
+			private function doSearch():void
+			{
+			 	var i : int = SearchEngine.getSearchEngine(table).search(searchTextInput.text, 
+			 												matchCaseCheckBox.selected, 
+			 												highlightAllCheckBox.selected);
+			 	lblSearchResult.text = "Search result: " + i + " item(s)";
+				
+				nextButton.enabled = (i != 0);
+			}
+			
+			private function doReplace():void
+			{
+			 	totalReplace = ReplaceEngine.getReplaceEngine(table).replace(searchForReplaceTextInput.text, replaceWithTextInput.text,
+			 												matchCaseCheckBox.selected, 
+			 												highlightAllCheckBox.selected);											
+				 
+				//nextReplaceButton.enabled = (totalReplace != 0);
+				
+				if (totalReplace == 0)
+				{
+					lblReplacementResult.text = "Number of replaced item(s): 0" 
+				} else {
+					
+					lblReplacementResult.text = "Number of replaced item(s): 1/" + totalReplace;	
+				}
+			}
+			
+			private function doReplaceAll():void
+			{
+				totalReplace = ReplaceEngine.getReplaceEngine(table).replaceAll(searchForReplaceTextInput.text, replaceWithTextInput.text,
+									matchCaseReplaceCheckBox.selected, 
+									highlightAllReplaceCheckBox.selected);
+				lblReplacementResult.text = "Replaced: " + totalReplace + " item(s)";											
+			}
+			
+			/* private function nextReplace():void
+			{
+				lblReplacementResult.text = "Number of replaced item(s): " + 
+									ReplaceEngine.getReplaceEngine(table).replaceNext(replaceWithTextInput.text) + 
+									"/" + totalReplace;
+			} */
+			
+			private function onSearchForReplaceTextInputChange():void
+			{
+				//nextReplaceButton.enabled = false;
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Dissolve id="showEffect" duration="300" target="{tabNavigator}"/>
+	
+	<mx:Canvas width="100%" height="100%">
+		<mx:TabNavigator id="tabNavigator" right="0" bottom="0" left="0" top="10" 
+						 borderStyle="none">
+			<mx:Canvas label="Find" width="100%" height="100%" borderStyle="none" showEffect="{ showEffect }" 
+						show="{ searchTextInput.setFocus() }">
+				<mx:HBox height="44" left="5" bottom="5" right="5" borderColor="#FFFFFF" backgroundColor="#DFDEDE" 
+						 horizontalAlign="right" verticalAlign="middle"
+				 		 borderStyle="solid" cornerRadius="5">
+						<mx:Button id="searchButton" label="Search" click="{ doSearch() }"/>
+						<mx:Button id="nextButton" label="Next" click="{ doNext() }" enabled="false"/>
+						<mx:Button label="Cancel" click="{ PopUpManager.removePopUp(this); }"/>
+						<mx:Spacer/>
+				</mx:HBox>
+				<mx:Label x="10" y="23" text="Search for:" width="85" textAlign="right"/>
+				<mx:TextInput id="searchTextInput" x="103" y="21" width="267" enter="{ doSearch() }"/>
+				<mx:CheckBox id="matchCaseCheckBox" x="113" y="49" label="Match case" width="106"/>
+				<mx:CheckBox id="highlightAllCheckBox" x="227" y="49" label="Highlight all" selected="true"/>
+				<mx:Label id="lblSearchResult" x="124" y="131" width="246" fontWeight="bold" textAlign="right" text="Result:" color="#3F31F1"/>
+			</mx:Canvas>
+			<mx:Canvas label="Find and Replace" width="100%" height="100%" borderStyle="none"
+					   show="{ searchForReplaceTextInput.setFocus(); searchForReplaceTextInput.text = searchTextInput.text }" 
+					   showEffect="{ showEffect }">
+				<mx:HBox height="44" left="5" bottom="5" right="5" borderColor="#FFFFFF" backgroundColor="#DFDEDE" 
+						 horizontalAlign="right" verticalAlign="middle"
+				 		 borderStyle="solid" cornerRadius="5">
+				 		 <mx:Button label="Replace all" click="{ doReplaceAll() }"/>
+				 		 <mx:Button label="Replace" click="{ doReplace() }"/>
+				 		 <!--<mx:Button label="Next" id="nextReplaceButton" enabled="false" click="{ nextReplace() }"/>-->
+						<mx:Button label="Cancel" click="{ PopUpManager.removePopUp(this); }"/>
+						<mx:Spacer/>
+				</mx:HBox>  
+				<mx:Label x="10" y="23" text="Find:" width="85" textAlign="right"/>
+				<mx:TextInput id="searchForReplaceTextInput" x="103" y="21" width="267"
+							  change="{ onSearchForReplaceTextInputChange() }"	 
+							  enter="{ doReplace() }"/>
+				<mx:CheckBox id="matchCaseReplaceCheckBox" x="113" y="49" label="Match case" width="106"/>
+				<mx:CheckBox id="highlightAllReplaceCheckBox" x="227" y="49" label="Highlight all" selected="true"/>
+				<mx:Label x="10" y="75" text="and Replace with:" width="114" textAlign="left"/>
+				<mx:TextInput id="replaceWithTextInput" x="10" y="101" width="360" enter="{ doSearch() }"/>
+				<mx:Label id="lblReplacementResult" x="144" y="131" width="226" fontWeight="bold" textAlign="right" color="#3F31F1" text="Result: "/>
+			</mx:Canvas>
+		</mx:TabNavigator>
+	</mx:Canvas>	   
+</mx:TitleWindow>

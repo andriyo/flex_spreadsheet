@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+		   backgroundColor="#D0D0D0" 
+		   borderStyle="solid" 
+		   cornerRadius="4"
+		   showCloseButton="true"
+		   title="Options"
+		   creationComplete="creationCompleteHandler()" width="598" height="508" xmlns:panels="controls.panels.*">
+	
+		<mx:Script>
+			<![CDATA[
+				import mx.controls.Alert;
+				import mx.events.CloseEvent;
+				import mx.managers.PopUpManager;
+				
+				private function creationCompleteHandler() : void 
+				{
+					addEventListener(CloseEvent.CLOSE, onCloseButtonClick);
+					stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler);
+				}
+				
+				private function onKeyUpHandler(event : KeyboardEvent):void
+				{
+					if (event.charCode == 27)
+					{
+						stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler);
+						PopUpManager.removePopUp(this);
+					}
+				}
+				
+				private function onCloseButtonClick(event : Event) : void 
+				{
+					PopUpManager.removePopUp(this);
+				}
+				
+				private function onSaveButtonClick(event : MouseEvent) : void {
+					Alert.show("Please save me!!");
+				}
+			]]>
+		</mx:Script>
+	<mx:Dissolve id="showEffect" duration="300" target="{tabNavigator}"/>
+		
+	<mx:Canvas width="100%" height="100%">		
+		    <mx:TabNavigator borderStyle="none" id="tabNavigator" height="408" width="570">
+				
+		        <mx:VBox label="Account Settings" width="570" height="377" showEffect="showEffect" horizontalAlign="center" verticalAlign="top">
+		        	<mx:Spacer height="20"/>
+		        	<mx:HBox horizontalAlign="center" verticalAlign="middle">
+			            <mx:Label text="First Name :" width="117"/>
+			            <mx:TextInput id="firstNameInput"/>
+		        	</mx:HBox>
+		        	<mx:HBox verticalAlign="middle" horizontalAlign="center">
+			            <mx:Label text="Last Name :" width="117"/>
+			            <mx:TextInput id="lastNameInput"/>
+		        	</mx:HBox>
+		        	<mx:HBox verticalAlign="middle" horizontalAlign="center">
+			            <mx:Label text="New Password :" width="117"/>
+			            <mx:TextInput displayAsPassword="true" id="passwordInput"/>
+		        	</mx:HBox>
+		        	<mx:HBox verticalAlign="middle" horizontalAlign="center">
+			            <mx:Label text="Confirm Password :" width="117"/>
+			            <mx:TextInput displayAsPassword="true" id="confirmPasswordInput"/>
+		        	</mx:HBox>
+		        </mx:VBox>
+		
+		        <mx:VBox label="Tag management" width="100%" height="100%" showEffect="showEffect">
+		        </mx:VBox>
+		
+		        <mx:VBox label="General" width="532" height="150" showEffect="showEffect">
+		            <!-- Futures view goes here. -->
+		        </mx:VBox>   
+		    
+		        <mx:VBox label="Box.net" width="100%" height="100%" showEffect="showEffect" horizontalAlign="center">
+		        	<mx:Spacer height="20"/>
+		        	<mx:HBox horizontalAlign="center" verticalAlign="middle">
+			            <mx:Label text="E-mail:" width="73"/>
+			            <mx:TextInput id="boxEmailNameInput"/>
+		        	</mx:HBox>
+		        	<mx:HBox verticalAlign="middle" horizontalAlign="center">
+			            <mx:Label text="Password:" width="73"/>
+			            <mx:TextInput id="boxPasword"/>
+		        	</mx:HBox>
+		        </mx:VBox>   
+		    
+		        <mx:VBox label="Google spreadsheet" width="532" height="150" showEffect="showEffect" horizontalAlign="center">
+		        	<mx:Spacer height="20"/>
+		        	<mx:HBox horizontalAlign="center" verticalAlign="middle">
+		        	    <mx:Label text="E-mail:" width="73"/>
+		        	    <mx:TextInput id="boxEmailNameInput0"/>
+		        	</mx:HBox>
+		        	<mx:HBox verticalAlign="middle" horizontalAlign="center">
+		        	    <mx:Label text="Password:" width="73"/>
+		        	    <mx:TextInput id="boxPasword0"/>
+		        	</mx:HBox>
+		        </mx:VBox>   
+		    
+		    </mx:TabNavigator>
+			<mx:HBox height="44" left="0" bottom="0" right="0" borderColor="#FFFFFF" backgroundColor="#DFDEDE" 
+				 horizontalAlign="right" verticalAlign="middle"
+				 borderStyle="solid" cornerRadius="5">
+			<mx:Button id="saveButton" click="onSaveButtonClick(event)" label="Save"/>		 
+			<mx:Button label="Cancel" click="onCloseButtonClick(event)"/>
+			<mx:Spacer/>
+			</mx:HBox>
+	</mx:Canvas>		
+</mx:TitleWindow>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+	creationComplete="creationHandler()">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import controls.forms.TagSearchWindow;
+			import mx.core.IFlexDisplayObject;
+			import idubee.ejb.cmp.SpreadsheetFile;
+			[Bindable]
+			
+			private var searchTagWindow : IFlexDisplayObject;
+			
+			private function creationHandler():void
+			{
+			}
+			
+			private function openDoc(item:Object):void
+			{
+			}
+			
+			private function openTagSearchWindow():void
+			{
+				searchTagWindow = PopUpManager.createPopUp(UIComponent(Application.application), TagSearchWindow, false);
+				PopUpManager.centerPopUp(searchTagWindow);
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:HSlider width="100%"/>
+	<mx:TileList width="100%" height="100%"  id="fileTileList"
+		itemRenderer="docManager.FileItemRenderer" dataProvider="{dm.fileList}"
+		doubleClick="openDoc(fileTileList.selectedItem)" doubleClickEnabled="true"/>
+	<mx:HBox width="100%" horizontalAlign="center">
+		<mx:Button id="searchButton" label="Search" click="{ openTagSearchWindow() }"/>
+	</mx:HBox>
+</mx:VBox>

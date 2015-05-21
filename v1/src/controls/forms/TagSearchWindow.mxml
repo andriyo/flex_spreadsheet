@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="560" 
+		   height="510" borderStyle="solid"
+		   backgroundColor="#D5D3D3"
+		   cornerRadius="5"
+		   dropShadowEnabled="true"
+		   shadowDirection="right"
+		   shadowDistance="4" title="Search functionality"
+		   showCloseButton="true"
+		   creationComplete="{ onCreationCompleteHandler() }">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			private function onCreationCompleteHandler():void
+			{
+				addEventListener(CloseEvent.CLOSE, onCloseButtonClick);
+				stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler)
+			}
+			
+			private function onKeyUpHandler(event : KeyboardEvent):void
+			{
+				if (event.charCode == 27)
+				{
+					stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler);
+					PopUpManager.removePopUp(this);
+				}
+			}
+			
+			private function onCloseButtonClick(event : Event) : void 
+			{
+					PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Canvas width="100%" height="100%">
+	
+		<mx:HBox top="10" right="0" left="0" horizontalAlign="right" verticalAlign="middle" height="36" 
+				 borderStyle="solid" borderColor="#FEFEFE" cornerRadius="4"  alpha="1" backgroundColor="#D0CFCF">
+			<mx:Spacer/>
+			<mx:TextInput width="100%"/>
+			<mx:Button label="Search"/>
+			<mx:Spacer/>
+		</mx:HBox>
+		<mx:Canvas borderStyle="solid" borderColor="#FEFEFE" 
+				 cornerRadius="4"  alpha="1" backgroundColor="#D0CFCF" 
+				 top="54" right="0" bottom="52" left="0">
+			<mx:Label x="251" y="187" text="Tags"/>
+			
+		</mx:Canvas>
+		<mx:HBox height="44" left="0" bottom="0" right="0" borderColor="#FFFFFF" backgroundColor="#DFDEDE" 
+			 horizontalAlign="right" verticalAlign="middle"
+			 borderStyle="solid" cornerRadius="5">
+		<mx:Button id="saveButton" label="Submit"/>		 
+		<mx:Button label="Cancel" click="{ PopUpManager.removePopUp(this) }"/>
+		<mx:Spacer/>
+		</mx:HBox>
+	</mx:Canvas>	   
+</mx:TitleWindow>

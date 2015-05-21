@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" 
+				xmlns:menu="idubee.view.menu.*" 
+				xmlns:control="idubee.control.*" 
+				xmlns:containers="flexmdi.containers.*" 
+				xmlns:table="idubee.view.table.*" 
+				xmlns:editor="idubee.view.editor.*"
+				applicationComplete="creationHandler()">
+	<mx:Style source="assets/css/default.css"/>
+	<mx:Style source="assets/css/mdi.css"/>
+	<mx:Script source="IdubeeClientAS.as"/>
+	<control:IDBController/>
+	<mx:MenuBar id="mainMenu" width="100%" /> 
+	<mx:ApplicationControlBar dock="false" width="100%">
+		<menu:CommonControls/>
+		<menu:FormatTextToolBar/>
+	</mx:ApplicationControlBar>
+	<editor:EditorCanvas id="editorCanvas">
+		
+	</editor:EditorCanvas>
+</mx:Application>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+		  layout="absolute" width="466" height="470"
+		  styleName="login"
+		  title="Options">
+	<mx:Script>
+		<![CDATA[
+			import idubee.events.OptionsEvent;
+			
+			private function onCloseClick():void
+			{
+				var event : OptionsEvent = new OptionsEvent(OptionsEvent.CLOSE_OPTIONS);
+				event.targetForm = this;
+				event.dispatch();
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Button label="Close" right="10" bottom="10" width="55"
+			   click="{ onCloseClick() }"/>
+		  
+</mx:Panel>

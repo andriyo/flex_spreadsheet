@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" 
+			width="220" height="150" 
+			horizontalAlign="center" verticalAlign="middle" 
+			title="Document name"
+			creationComplete="createCompleteHandler()"
+			addedToStage="addedToStageHandler()">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import idubee.ejb.cmp.SpreadsheetFile;
+			static private var dialog:RenameDocDialog;
+			private var callback:Function;
+			private var doc:Object;
+			
+			private function createCompleteHandler():void
+			{
+				stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler)
+			}
+			
+			private function addedToStageHandler():void
+			{
+				stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler)
+			}
+			
+			private function onKeyUpHandler(event : KeyboardEvent):void
+			{
+				if (event.charCode == 27)
+				{
+					Application.application.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler);
+					PopUpManager.removePopUp(dialog);
+				}
+			}
+			
+			public static function showRenameDialog(doc:Object, callback:Function):void
+			{
+				if (!dialog)
+				{
+					dialog = new RenameDocDialog;
+					dialog.initialize();
+				}	
+				dialog.doc = doc;
+				dialog.callback = callback;
+				dialog.newDocName.text = doc.fileName;
+				PopUpManager.addPopUp(dialog,DisplayObject(Application.application));
+				PopUpManager.centerPopUp(dialog);
+			}
+			private function okHandler():void
+			{
+				doc.fileName = newDocName.text;
+				cancelHandler();
+				callback();				
+			}
+			private function cancelHandler():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:Label text="Enter new document name"/>
+	<mx:TextInput id="newDocName"/>
+	<mx:HBox width="100%" horizontalAlign="center">
+		<mx:Button label="OK" click="okHandler()"/>
+		<mx:Button label="Cancel" click="cancelHandler()"/>
+	</mx:HBox>
+</mx:TitleWindow>

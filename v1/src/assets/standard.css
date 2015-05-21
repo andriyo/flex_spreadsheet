@@ -1,0 +1,20 @@
+/* CSS file */
+Application
+{
+	backgroundGradientAlphas: 1.0, 1.0;
+	backgroundGradientColors: #FFFFFF, #DAD8D8;
+}
+Button
+{
+	themeColor: #0EC416;
+	cornerRadius: 0;
+	borderColor: #FFFFFF;
+}
+
+global
+{
+    modalTransparencyBlur: 0;
+    modalTransparency: 0.8;
+    modalTransparencyColor: #333333;
+    modalTransparencyDuration: 200;
+}

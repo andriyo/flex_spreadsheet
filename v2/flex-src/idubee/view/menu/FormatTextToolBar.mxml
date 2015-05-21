@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox label="Edit" xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:menu="idubee.view.menu.*"	 
+		 width="100%" height="100%" verticalAlign="middle"
+		 >
+	<mx:ComboBox id="formatToolBarFontFamilyCombo"
+				selectedIndex="{formatCtx.font}"
+				dataProvider = "{formatCtx.fontFamilyArray}"
+				close="setTextStyles('font', formatToolBarFontFamilyCombo.selectedIndex);"
+				enter="setTextStyles('font', formatToolBarFontFamilyCombo.selectedIndex);"/>
+
+			<mx:ComboBox id="formatToolBarFontSizeCombo" editable="true"
+				text="{formatCtx.size}"
+				paddingLeft="2" paddingRight="2"
+				dataProvider = "{formatCtx.fontSizeArray}"
+				close="setTextStyles('size', formatToolBarFontSizeCombo.selectedItem);"
+				enter="setTextStyles('size', formatToolBarFontSizeCombo.selectedItem);"/>
+					 
+			<mx:HBox id="toolBar2" horizontalGap="0">
+
+				<mx:Button id="formatToolBarBoldButton" width="20" toggle="true"
+						   icon="@Embed('assets/img/icon_style_bold.png')"
+						   selected="{formatCtx.bold}"
+						   click="setTextStyles('bold', event.currentTarget.selected);" /> 
+				
+				<mx:Button id="formatToolBarItalicButton" width="20" toggle="true"
+						   icon="@Embed('assets/img/icon_style_italic.png')"
+						   selected="{formatCtx.italic}"
+						   click="setTextStyles('italic', event.currentTarget.selected);" /> 
+				
+				<mx:Button id="formatToolBarUnderlineButton" width="20" toggle="true"
+						   icon="@Embed('assets/img/icon_style_underline.png')"
+						   selected="{formatCtx.underline}"
+						   click="setTextStyles('underline', event.currentTarget.selected);" /> 
+
+			</mx:HBox>
+		
+			<mx:ColorPicker id="formatToolBarColorPicker" width="22" height="22"
+				selectedColor="{formatCtx.color}"
+						close="setTextStyles('color', formatToolBarColorPicker.selectedColor);"/>
+
+			<mx:VRule height="{formatToolBarAlignButtons.height}"/>
+
+			<mx:ToggleButtonBar id="formatToolBarAlignButtons" buttonWidth="20"
+				selectedIndex="{formatCtx.align}"
+							itemClick="setTextStyles('align', ToggleButtonBar(event.currentTarget).selectedIndex); " >
+				<mx:dataProvider>
+					<mx:Array> 
+						<mx:Object icon="@Embed('assets/img/icon_align_left.png')" action="left"/>
+						<mx:Object icon="@Embed('assets/img/icon_align_center.png')" action="center"/>
+						<mx:Object icon="@Embed('assets/img/icon_align_right.png')" action="right"/>
+						<mx:Object icon="@Embed('assets/img/icon_align_justify.png')" action="justify"/>
+					</mx:Array>
+				</mx:dataProvider>
+			</mx:ToggleButtonBar>	   
+	<mx:Script>
+		<![CDATA[
+			import mx.events.PropertyChangeEvent;
+			import idubee.view.editor.EditorCanvas;
+			import mx.binding.utils.ChangeWatcher;
+			import idubee.model.EditorCtx;
+			import idubee.model.TextFormatCtx;
+			import idubee.events.TextFormatEvent;
+			import mx.core.IFlexDisplayObject;
+			import mx.core.Application;
+			import mx.core.UIComponent;
+			import mx.managers.PopUpManagerChildList;
+			import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			
+			public var fontFamilyToolTip:String = "Font Family";
+			public var fontSizeToolTip:String = "Font Size";
+			public var boldToolTip:String = "Bold";
+			public var italicToolTip:String = "Italic";
+			public var underlineToolTip:String = "Underline";
+			public var colorPickerToolTip:String = "Color";
+			public var alignToolTip:String = "Align";
+			public var bulletToolTip:String = "Bullet";
+			public var linkToolTip:String = "Link";
+			
+			[Bindable]
+			private var formatCtx:TextFormatCtx = TextFormatCtx.ctx;
+		    private function setTextStyles(type:String, value:Object = null):void
+			{
+				var event:TextFormatEvent = new TextFormatEvent(TextFormatEvent.FORMAT_CHANGED);
+				event.styleName = type;
+				event.styleValue = value;
+				event.dispatch();
+			}
+			
+		]]>
+	</mx:Script>
+</mx:HBox>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical"
+	 width="400" height="600" title="Error" showCloseButton="true"
+	 close="close()" backgroundColor="#F4ACAC">
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			private function restart():void
+			{
+				navigateToURL(new URLRequest("../spreadsheet"),"_self");
+			}
+			private function close():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:Label text="Following error occured" fontWeight="bold"/>
+	<mx:TextArea width="100%" height="100%" id="errorMsg"/>
+	<mx:Text text="Explanation" fontWeight="bold"/>
+	<mx:TextInput width="100%" height="100%" id="explanation"/>
+	<mx:HBox width="100%" horizontalAlign="center">
+		<mx:Button label="Restart" click="restart()" fillAlphas="[1.0, 1.0]" fillColors="[#BF0F0F, #BF0F0F]"/>
+		<mx:Button label="Close" click="close()"/>
+	</mx:HBox>
+	
+</mx:TitleWindow>

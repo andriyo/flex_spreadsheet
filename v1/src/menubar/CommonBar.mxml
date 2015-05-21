@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" horizontalAlign="center">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import mx.core.Application;
+			import mx.events.CloseEvent;
+			import controls.forms.OptionsWindow;
+			import mx.managers.PopUpManager;
+			import mx.containers.TitleWindow;
+			import mx.core.IFlexDisplayObject;
+			
+		   [Embed(source="/assets/logo/idubee_logo_mini.gif")]
+           private static const LOGO_MINI : Class;
+		   
+		   [Embed(source="/assets/icons/icon_saveas.png")]
+           private static const ICON_SAVEAS : Class;
+               
+		   [Embed(source="/assets/icons/icon_save.png")]
+           private static const ICON_SAVE : Class;
+               
+		   [Embed(source="/assets/icons/icon_new.png")]
+           private static const ICON_NEW : Class;
+           
+            [Embed(source="/assets/icons/icon_options.png")]
+            private static const ICON_OPTIONS : Class;
+               
+            private var optionsWindow : IFlexDisplayObject;
+               
+			private function createNew():void
+			{
+				//TODO show new file dialog
+			}
+			
+			private function onOptionsButtonClick() : void {
+	            optionsWindow = PopUpManager.createPopUp(UIComponent(Application.application), OptionsWindow, false);
+            }
+            private function saveFile():void
+            {
+            }
+
+		]]>
+	</mx:Script>
+	<mx:Image id="imgLogoMini" source="{LOGO_MINI}" 
+			  width="146" scaleContent="true" 
+			  horizontalAlign="center"/>
+	
+	<mx:HBox>
+		<mx:Button 	downSkin="{ICON_NEW}" 
+					overSkin="{ICON_NEW}" 
+					upSkin="{ICON_NEW}" 
+					disabledSkin="{ICON_NEW}" 
+					click="createNew()"
+					toolTip="New"/>
+		<mx:Button 	downSkin="{ICON_SAVE}" 
+					overSkin="{ICON_SAVE}" 
+					upSkin="{ICON_SAVE}" 
+					disabledSkin="{ICON_SAVE}" 
+					toolTip="Save" click="saveFile()"/>
+		<mx:Button 	downSkin="{ICON_SAVEAS}" 
+					overSkin="{ICON_SAVEAS}" 
+					upSkin="{ICON_SAVEAS}" 
+					disabledSkin="{ICON_SAVEAS}"
+					toolTip="Save As"/>
+		<mx:Button 	id="optionsButton"
+					downSkin="{ICON_OPTIONS}" 
+					overSkin="{ICON_OPTIONS}" 
+					upSkin="{ICON_OPTIONS}" 
+					disabledSkin="{ICON_OPTIONS}" 
+					click="onOptionsButtonClick()"
+					toolTip="Options"/>
+	</mx:HBox>
+	
+</mx:VBox>

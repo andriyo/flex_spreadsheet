@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+		   width="100" cornerRadius="5" 
+		   borderStyle="solid" 
+		   dropShadowEnabled="true"
+		   shadowDirection="right"
+		   shadowDistance="3"
+		   backgroundColor="#D5D5D5"
+		   visible="true"
+		   verticalGap="5"
+		   creationComplete="creationCompleteHandler()"
+		   showEffect="{ showMenuEffect }"
+		   hideEffect="{ closeMenuEffect }" height="157">
+		   
+	<mx:Script>
+		<![CDATA[
+			import controls.Table;
+			import mx.effects.WipeDown;
+			import mx.effects.WipeRight;
+			import mx.effects.WipeLeft;
+			import mx.effects.Effect;
+			import mx.managers.PopUpManager;
+			
+			public static var LEFT_ORIENTATION 	: String = "left";
+			public static var RIGTH_ORIENTATION : String = "rigth";
+			public static var UP_ORIENTATION 	: String = "up";
+			public static var DOWN_ORIENTATION 	: String = "down";
+			
+			public var table : Table;
+			
+			public var orientation : String = DOWN_ORIENTATION;
+			public var orientationEffect : Effect;
+			
+			private function creationCompleteHandler():void
+			{
+				stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler);
+			}
+			
+			private function onKeyUpHandler(event : KeyboardEvent):void
+			{
+				if (event.charCode == 27)
+				{
+					stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUpHandler);
+					this.visible = false;
+				}
+			}
+
+			private function _showMenuEffect():Effect
+			{
+				switch (orientation)
+				{
+					case "left": orientationEffect = new WipeLeft(this);
+								 break; 
+					
+					case "rigth": orientationEffect = new WipeRight(this);
+								  break; 	
+							
+					case "up": orientationEffect = new WipeUp(this);
+							   break;	
+					
+					case "down": orientationEffect = new WipeDown(this);
+								 break;
+					
+					default: break;
+				}
+				
+				orientationEffect.duration = 500;
+				
+				return orientationEffect;
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:WipeUp id="closeMenuEffect" target="{this}" duration="100" 
+			   effectEnd="{ PopUpManager.removePopUp(this) }"/>
+	<mx:WipeDown id="showMenuEffect" target="{this}" duration="300"/>
+	 
+	<mx:Spacer height="5"/>
+	<mx:LinkButton label="Copy" textAlign="left" width="100%" 
+				   rollOverColor="#AAC1E4" selectionColor="#B2C6E4"
+				   click="{ table.doCopy(); visible = false }"/>
+	<mx:LinkButton label="Cut" textAlign="left" width="100%" 
+		           rollOverColor="#AAC1E4" selectionColor="#B2C6E4"
+		           click="{ table.doCut(); visible = false }"/>
+	<mx:LinkButton label="Paste" textAlign="left" width="100%" 
+		           rollOverColor="#AAC1E4" selectionColor="#B2C6E4"
+		           click="{ table.doPaste(); visible = false }"/>
+	<mx:LinkButton label="Delete" textAlign="left" width="100%"  
+		           rollOverColor="#AAC1E4" selectionColor="#B2C6E4"
+		           click="{  }"/>
+</mx:VBox>

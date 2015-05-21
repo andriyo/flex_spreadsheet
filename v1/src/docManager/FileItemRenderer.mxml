@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	 width="126" height="110">
+	 <mx:Canvas  height="90" x="10" y="10" width="106" horizontalScrollPolicy="off" backgroundColor="#BDBDBD">
+		<mx:Label text="{data.fileName}" fontSize="10" x="5.5" y="36"
+				  toolTip="{data.fileName}"/> 	
+	 </mx:Canvas>
+</mx:Canvas>

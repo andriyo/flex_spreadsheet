@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="162" horizontalAlign="right" verticalAlign="middle">
+
+	<mx:Label id="tagName" text="{data.label}" width="100%" textAlign="center"/>
+	<mx:Button width="15" height="15" 
+			   cornerRadius="15"/>
+	<mx:Spacer width="5"/>		   
+	
+</mx:HBox>

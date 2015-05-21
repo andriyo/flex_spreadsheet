@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<workbook  xmlns:m="http://www.adobe.com/2006/mxml">
+<fileversion />
+	<styles>
+		<style id="1">default</style>
+	</styles>
+		<sheets>
+			<sheet id="1" name="sheet1">
+				<selection activeCell="B6"/>
+				<sheetData>
+					<row r="3">
+						<c r="B3">
+							<v>1</v>
+						</c>
+					</row>
+					<row r="4">
+						<c r="B4">
+							<v>2</v>
+						</c>
+					</row>
+					<row r="5">
+						<c r="B5">
+							<v>3</v>
+						</c>
+					</row>
+					<row r="6">
+						<c r="B6">
+							<f>SUM(B3:B5)</f>
+							<v>6</v>
+						</c>
+					</row>
+				</sheetData>	
+			</sheet>
+		</sheets>	
+</workbook>

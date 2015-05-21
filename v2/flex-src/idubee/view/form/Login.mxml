@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+		  layout="absolute" width="400" height="300"
+		  styleName="login"
+		  title="Login">
+	<mx:Script>
+		<![CDATA[
+			import idubee.events.LoginEvent;
+			import mx.managers.PopUpManager;
+			import mx.core.Application;
+			import mx.effects.easing.Quintic;
+			
+			private function onCancelClick():void
+			{
+				var event : LoginEvent = new LoginEvent(LoginEvent.CLOSE_LOGIN);
+				event.targetForm = this;
+				event.dispatch();
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox x="10" y="230" width="360" horizontalAlign="right" verticalAlign="middle">
+		<mx:Button label="Login"/>
+		<mx:Button label="Cancel" click="{ onCancelClick() }"/>
+	</mx:HBox>
+
+<mx:Move id="closeLoginEffect" target="{this}" duration="500" easingFunction="{Quintic.easeInOut }" 
+		 yTo="{ -Application.application.height - this.height }" 
+		 effectEnd="{PopUpManager.removePopUp(this)}"/>
+</mx:Panel>

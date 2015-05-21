@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="30" verticalAlign="middle"
+		 creationComplete="{ onCreation() }" paddingTop="0" paddingBottom="0">
+	<mx:Spacer width="5"/>
+	<mx:Button height="20" width="20" cornerRadius="20" click="{ onCloseClick() }" textAlign="center"/>
+	<mx:TextInput id="addresInputText" textAlign="center" enter="{ onAddressEnter() }"/>
+	<mx:Spacer width="5"/>
+	<mx:TextInput id="cellValueInputText" width="100%"/>
+	<mx:Spacer width="5"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import idubee.events.SelectionEvent;
+			import mx.collections.ArrayCollection;
+			import idubee.model.Spreadsheet;
+			import idubee.model.Rect;
+			import idubee.view.table.Table;
+			import idubee.model.Pnt;
+			import idubee.model.SpreadsheetEvent;
+			import idubee.model.EditorCtx;
+			import idubee.events.AddressBarEvent;
+			
+			public var table : Table;
+			
+			private function onCloseClick():void
+			{
+				new AddressBarEvent(AddressBarEvent.SHOW_HIDE_BAR).dispatch()
+			}
+			
+			private function onCreation():void
+			{
+				table.addEventListener(SpreadsheetEvent.SELECTION_CHANGED, onSelectionChanged);
+			}
+		
+			private function onSelectionChanged(event : SpreadsheetEvent):void
+			{
+				addresInputText.text = event.newSelection.toString()
+				if (event.cell)
+				{
+					cellValueInputText.text = event.cell.t;					
+				}
+			}
+			
+			private function onAddressEnter():void
+			{
+				var s : Spreadsheet = EditorCtx.ctx.workbook.selectedSpreadsheet;
+				s.selections.length = 0;
+				var r:Rect;
+				var ranges:Array = addresInputText.text.split(",");
+				var selectionsRects:ArrayCollection = new ArrayCollection;
+				for each (var range : String in ranges)
+				{
+					r = Rect.parse(range);
+					if (!r)
+					{
+						
+					}
+					selectionsRects.addItem(r);
+				}
+				var e:SelectionEvent = new SelectionEvent(SelectionEvent.SELECT_CELLS);
+				e.selectCells = selectionsRects;
+				e.dispatch();
+			}
+		]]>
+	</mx:Script>
+	
+</mx:HBox>

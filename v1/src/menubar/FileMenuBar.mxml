@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%"
+	label="Documents" verticalAlign="middle" paddingLeft="5" paddingRight="5">
+	<mx:Script>
+		<![CDATA[
+
+		   [Embed(source="/assets/icons/icon_sort.png")]
+           private static const ICON_SORT : Class;
+               
+		   [Embed(source="/assets/icons/icon_search.png")]
+           private static const ICON_SEARCH : Class;
+               
+		   [Embed(source="/assets/icons/icon_print.png")]
+           private static const ICON_PRINT : Class;
+               
+		   [Embed(source="/assets/icons/icon_open.png")]
+           private static const ICON_OPEN : Class;
+               
+		   [Embed(source="/assets/icons/icon_import.png")]
+           private static const ICON_IMPORT : Class;
+               
+		   [Embed(source="/assets/icons/icon_download.png")]
+           private static const ICON_DOWNLOAD : Class;
+               
+		   [Embed(source="/assets/icons/icon_delete.png")]
+           private static const ICON_DELETE : Class;
+               
+		]]>
+	</mx:Script>
+	<mx:Button 	downSkin="{ICON_OPEN}" 
+				overSkin="{ICON_OPEN}" 
+				upSkin="{ICON_OPEN}" 
+				disabledSkin="{ICON_OPEN}" 
+				toolTip="Open"/>
+	<mx:Button 	downSkin="{ICON_IMPORT}" 
+				overSkin="{ICON_IMPORT}" 
+				upSkin="{ICON_IMPORT}" 
+				disabledSkin="{ICON_IMPORT}" 
+				/>
+	<mx:Button label="Export"/>
+	<mx:Button 	downSkin="{ICON_DELETE}" 
+				overSkin="{ICON_DELETE}" 
+				upSkin="{ICON_DELETE}" 
+				disabledSkin="{ICON_DELETE}" 
+				toolTip="Delete"/>
+</mx:HBox>

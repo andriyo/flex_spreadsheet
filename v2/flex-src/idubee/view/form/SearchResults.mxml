@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+		  layout="absolute" 
+		  width="232" height="312"
+		  styleName="login"
+		  title="Search results">
+	<mx:Button label="Close" click="{ onCloseClick() }" right="10" bottom="10"/>
+	<mx:Script>
+		<![CDATA[
+			import idubee.model.Rect;
+			import mx.collections.ArrayCollection;
+			import mx.events.ListEvent;
+			import idubee.events.SelectionEvent;
+			import idubee.model.Pnt;
+			import mx.events.FlexEvent;
+			import idubee.model.Cell;
+			import idubee.model.EditorCtx;
+			import idubee.events.FindEvent;
+		
+			private function onCloseClick():void
+			{
+				new FindEvent(FindEvent.CLOSE_FIND_ALL).dispatch();
+			}
+			
+			private function onHighLightAll():void
+			{
+				var selectEvent : SelectionEvent = new SelectionEvent(SelectionEvent.SELECT_CELLS);
+				for each (var item : Cell in allResultsList.dataProvider)
+				{
+					selectEvent.selectCells.addItem(new Rect(item.currentAddress().x, item.currentAddress().y))
+				}
+				selectEvent.dispatch();
+			}
+			
+			private function listLabelFunction(item : Object):String
+			{
+				var label : String;
+				label = Pnt.num2abc((item as Cell).currentAddress().x) + ':' + ((item as Cell).currentAddress().y + 1)  + 
+							 '   ' + (item as Cell).t; 
+				return label;
+			}
+			
+			private function onListItemClick(event : ListEvent):void
+			{
+				var selectEvent : SelectionEvent = new SelectionEvent(SelectionEvent.SELECT_CELLS);
+				for each (var cell : Cell in (event.target as List).selectedItems)
+				{
+					selectEvent.selectCells.addItem(new Rect(cell.currentAddress().x, cell. currentAddress().y))
+				}
+				selectEvent.dispatch();
+			}
+		]]>
+	</mx:Script>
+	<mx:List right="10" left="10" top="10" bottom="44" id="allResultsList"
+			 dataProvider="{ EditorCtx.ctx.workbook.searchResults }"
+			 labelFunction="listLabelFunction" allowMultipleSelection="true"  
+			 itemClick="{ onListItemClick(event) }">
+	</mx:List>
+	<mx:Button x="92" y="247" label="Highlight all" click="{ onHighLightAll() }"/>
+</mx:Panel>

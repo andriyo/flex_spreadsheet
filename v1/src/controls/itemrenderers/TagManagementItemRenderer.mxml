@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="176" height="46"
+			horizontalScrollPolicy="off" verticalScrollPolicy="off">
+	<mx:HBox id="box" verticalAlign="middle" right="10" bottom="10" top="10" left="10"
+			 >
+		<mx:LinkButton id="tagLinkButton" label="{ data.name }" toolTip="{data.name + ': Click to Edit'}" 
+					   hideEffect="{hideLinkButtonEffect}" click="{startUpdating(event) }" width="123"/>
+		<mx:Button id="removeTagButton" width="20" height="20" toolTip="Delete" label="X" click="{ removeTag() }"/>
+	</mx:HBox>
+<mx:Script>
+	<![CDATA[
+		import docManager.TagManager;
+		import idubee.ejb.cmp.Tag;
+		import mx.controls.TileList;
+		import mx.collections.ArrayCollection;
+		import mx.core.UIComponent;
+		import mx.effects.effectClasses.ActionEffectInstance;
+		import mx.events.EffectEvent;
+		import mx.events.FlexEvent;
+		import mx.controls.TextInput;
+		
+		private var tagEditTextInput : TextInput;
+		private var clonedTagLinkButton : LinkButton;
+		private var tagManager : TagManager = TagManager.getTagManager();
+		
+		private function startUpdating(event : MouseEvent = null):void
+		{
+			(box.getChildAt(0) as LinkButton).visible = false;
+		}
+		
+		private function hideLinkButtonEffectEnd():void
+		{
+			createCloneLinkButton()
+			box.removeChild(box.getChildAt(0));
+			var index : int = box.getChildIndex(removeTagButton);
+			
+			tagEditTextInput = new TextInput();
+			tagEditTextInput.text = data.name;
+			tagEditTextInput.width = 123;
+			box.addChildAt(tagEditTextInput, index);
+			tagEditTextInput.setStyle("hideEffect", hideTextInputEffect);
+			tagEditTextInput.setFocus()
+			tagEditTextInput.setSelection(0, tagEditTextInput.text.length)
+			
+			tagEditTextInput.addEventListener(FocusEvent.FOCUS_OUT, onFocusOutEditTag);
+			tagEditTextInput.addEventListener(FlexEvent.ENTER, onEnterInEditTag)
+		}
+		
+		private function hideTextInputEffectEnd():void
+		{
+			 clonedTagLinkButton.label = tagEditTextInput.text;
+			 clonedTagLinkButton.toolTip = clonedTagLinkButton.label + ": Click to Edit"; 
+			 var editedTag : Tag = new Tag;
+			 editedTag.name = tagEditTextInput.text;
+			 tagManager.editTag(editedTag);  
+			 
+			 var index : int = box.getChildIndex(tagEditTextInput);
+			 box.removeChild(tagEditTextInput);
+			 box.addChildAt(clonedTagLinkButton, index);
+		}
+		
+		private function createCloneLinkButton():void
+		{
+			clonedTagLinkButton = new LinkButton;
+			clonedTagLinkButton.width = 123;
+			clonedTagLinkButton.toolTip = "Click to edit";
+			clonedTagLinkButton.addEventListener(MouseEvent.CLICK, startUpdating);
+			clonedTagLinkButton.setStyle("hideEffect", hideLinkButtonEffect);
+		}
+		
+		private function removeTag():void
+		{
+			tagManager.deleteTag(data as Tag);
+		}
+		
+		private function onFocusOutEditTag(event : FocusEvent):void
+		{
+			tagEditTextInput.visible = false;
+			tagEditTextInput.removeEventListener(FocusEvent.FOCUS_OUT, onFocusOutEditTag);
+		}
+		
+		private function onEnterInEditTag(event : FlexEvent):void
+		{
+			tagEditTextInput.visible = false;
+			tagEditTextInput.removeEventListener(FlexEvent.ENTER, onEnterInEditTag)
+		}
+		
+	]]>
+</mx:Script>
+	<mx:Dissolve id="hideTextInputEffect" duration="400" effectEnd="{ hideTextInputEffectEnd() }"/>
+	<mx:Dissolve id="hideLinkButtonEffect" duration="400" effectEnd="{ hideLinkButtonEffectEnd() }"/>		
+</mx:Canvas>
+	

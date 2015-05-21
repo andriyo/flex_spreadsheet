@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+	<mx:Script>
+		<![CDATA[
+			import idubee.engine.Tokenizer;
+			private function parse():void
+			{
+				var tokens:Array = Tokenizer.tokenize(input.text);
+				tokensList.dataProvider = tokens;
+			}
+		]]>
+	</mx:Script>
+	<mx:TextInput x="10" y="10" width="272" id="input"/>
+	<mx:Button x="290" y="10" label="Parse" click="parse()"/>
+	<mx:List x="10" y="40" width="272" height="339" id="tokensList"></mx:List>
+	
+</mx:Application>

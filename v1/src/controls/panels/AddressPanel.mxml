@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="519" cornerRadius="15" borderStyle="solid"
+		   creationComplete="{ onCreationCompleteHandler() }">
+	<mx:TextInput id="address" top="5" bottom="5" left="15"  
+				  enter="{ onEnterPress() }" textAlign="center"/>
+	<mx:TextInput id="selectionValue" top="5" bottom="5" left="183" right="32" enter="{ onEnterValue() }"/>			  
+	<mx:Button toolTip="Close address bar" 
+			   width="15" height="15" 
+			   cornerRadius="15"
+			   right="9" top="9"/>
+	<mx:Script>
+		<![CDATA[
+			import model.Spreadsheet;
+			import controls.tableClasses.Utils;
+			import controls.selectionClasses.SelectionEvent;
+			import controls.BorderedTable;
+			
+			public var table : BorderedTable;
+			
+			private function onCreationCompleteHandler():void
+			{
+				table.addEventListener(SelectionEvent.SELECTION, onSelectionHandler);
+				selectionValue.addEventListener(TextEvent.TEXT_INPUT, onTextInputHandler);
+			}
+			
+			private function onSelectionHandler(event : SelectionEvent):void
+			{
+				if ((event.x1 != event.x2) || (event.y1 != event.y2))
+				{
+					address.text = Utils.convertNumberToABC(event.x1 + 1) + (event.y1 + 1) + 
+													':' + Utils.convertNumberToABC(event.x2 + 1) + (event.y2 + 1)
+				} else {
+					
+					if ((table.dataProvider as Spreadsheet).getFormulaAt(event.x1, event.y1))
+					{
+						selectionValue.text = '=' + (table.dataProvider as Spreadsheet).getFormulaAt(event.x1, event.y1);
+							
+					} else {
+						
+						selectionValue.text = (table.dataProvider as Spreadsheet).getTextValueAt(event.x1, event.y1);
+					}
+					
+					address.text = Utils.convertNumberToABC(event.x1 + 1) + (event.y1 + 1); 
+				}
+			}
+			
+			private function onTextInputHandler(event : TextEvent):void
+			{
+				if (selectionValue.text)
+				{
+					if (selectionValue.text.indexOf('=') == 0)
+					{
+						table.table.selectionLayer.startAddressSelection();
+						table.table.selectionLayer.addressEditor = selectionValue;		
+					} else {
+						
+						table.table.selectionLayer.endAddressSelection();
+					}
+					
+					if (table.table.selectionLayer.editor)
+					{
+						table.table.selectionLayer.editor.appendText(event.text);
+					}
+				}
+			}
+			
+			public function onEnterPress():void
+			{
+				table.setSelection(address.text);
+			}
+			
+			public function onEnterValue():void
+			{
+				(table.dataProvider as Spreadsheet).setTextValueAt(Utils.toRectangle(address.text).x,Utils.toRectangle(address.text).y,
+																		 selectionValue.text);
+				table.setFocus();														 
+			}
+		]]>
+	</mx:Script>		   
+</mx:Canvas>

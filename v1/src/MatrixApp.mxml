@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns:ns1="controls.*"
+	creationComplete="creationHandler()"
+	 xmlns:ns2="controls.panels.*">
+	<mx:Script>
+		<![CDATA[
+			import controls.tableClasses.Utils;
+			import controls.selectionClasses.SelectionEvent;
+			import model.Spreadsheet;
+			import mx.managers.PopUpManager;
+			import mx.core.IFlexDisplayObject; 
+			import mx.controls.Alert;
+			import controls.tableClasses.RandomModelGenerator;
+			
+			private function creationHandler():void 
+			{
+				RandomModelGenerator.loadTemplate();
+				addEventListener(SelectionEvent.SELECTION, onSelectionHandler);
+			}
+			
+			private function onSelectionHandler(event : SelectionEvent):void
+			{
+				/* if ((event.x1 != event.x2) || (event.y1 != event.y2))
+				{
+					addressLine.selectionAddress = Utils.convertNumberToABC(event.x1 + 1) + (event.y1 + 1) + 
+													':' + Utils.convertNumberToABC(event.x2 + 1) + (event.y2 + 1)
+				} else {
+					
+					if ((table.dataProvider as Spreadsheet).getFormulaAt(event.x1, event.y1))
+					{
+						addressLine.selectionAddress = '=' + (table.dataProvider as Spreadsheet).getFormulaAt(event.x1, event.y1);
+							
+					} else {
+						
+						addressLine.selectionAddress = Utils.convertNumberToABC(event.x1 + 1) + (event.y1 + 1); 
+					}
+				} */
+			}
+			
+			public function uploadFile():void
+			{
+					
+			}
+		]]>
+	</mx:Script>
+	<ns1:BorderedTable id="table" right="10" left="10" bottom="52" top="60" dataProvider="{RandomModelGenerator.loadTemplate()}"/>
+	<ns2:AddressPanel id="addressLine" table="{table}" bottom="10" right="10" left="10">
+	</ns2:AddressPanel>
+	
+</mx:Application>

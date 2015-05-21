@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" label="Edit" 
+		 paddingLeft="10" paddingTop="5" paddingBottom="5" verticalAlign="middle">
+	<mx:ComboBox id="fontFamilyCombo" editable="true"
+ 	  			 dataProvider = "{fontFamilyArray}"
+ 	  			 creationComplete="{ getTextStyles(); lastCaretIndex = -1 }"
+ 	  			 close="{ setTextStyles('font', event.target.selectedItem) }"
+				 enter="{ setTextStyles('font', event.target.selectedItem) }"/>
+	
+	<mx:ComboBox id="fontSizeCombo" width="50" editable="true"
+  				 paddingLeft="2" paddingRight="2"
+				 dataProvider = "{fontSizeArray}"
+				 close="setTextStyles('size', event.target.selectedItem)"
+				 enter="setTextStyles('size', event.target.selectedItem);"/>
+	
+	<mx:HBox id="toolBar2" horizontalGap="0">
+		<mx:Button id="boldButton" width="30" height="30" toggle="true"
+				   icon="{ICON_B}"
+				   click="setTextStyles('bold', event.currentTarget.selected);" /> 
+			
+		<mx:Button id="italicButton" width="30" height="30" toggle="true"
+				   icon="{ICON_I}"
+				   click="setTextStyles('italic', event.currentTarget.selected);" /> 
+				
+		<mx:Button id="underlineButton" width="30" height="30" toggle="true"
+				   icon="{ICON_U}"
+				   click="setTextStyles('underline', event.currentTarget.selected);" /> 
+	</mx:HBox>
+
+	<mx:ColorPicker id="colorPicker" width="30" height="30"
+					close="setTextStyles('color', event.target.selectedColor);"/>
+
+	<mx:VRule height="{alignButtons.height}"/>
+
+	<mx:ToggleButtonBar id="alignButtons" buttonWidth="30" buttonHeight="30"
+						itemClick="setTextStyles('align', ToggleButtonBar(event.currentTarget).dataProvider.getItemAt(ToggleButtonBar(event.currentTarget).selectedIndex).action); " >
+		<mx:dataProvider>
+			<mx:Array> 
+				<mx:Object icon="{ICON_TEXT_LEFT}" action="left"/>
+				<mx:Object icon="{ICON_TEXT_CENTER}" action="center"/>
+				<mx:Object icon="{ICON_TEXT_RIGHT}" action="right"/>
+				<mx:Object icon="{ICON_TEXT_FULL}" action="justify"/>
+			</mx:Array>
+		</mx:dataProvider>
+	</mx:ToggleButtonBar>
+
+<!--	<mx:Button id="bulletButton" width="30" height="30" toggle="true"
+			   icon="@Embed('/assets/original/icon_bullet.png')"
+			   click="setTextStyles('bullet', event.currentTarget.selected);" /> 
+-->	
+	<mx:VRule height="{linkTextInput.height}"/>
+
+	<mx:TextInput id="linkTextInput" width="140"
+		focusOut="if (linkTextCommitted) 
+				  { trace('already committed'); linkTextCommitted = false; } 
+				  else 
+				  { trace('not committed'); setTextStyles('url', linkTextInput.text); linkTextInput.text=defaultLinkProtocol;}"
+		enter="setTextStyles('url', linkTextInput.text); linkTextInput.text = defaultLinkProtocol; linkTextCommitted = true;"/>
+	
+	<mx:VRule height="{linkTextInput.height}"/>
+
+	<mx:Button id="searchButton" width="30" height="30"
+			   icon="{ICON_SEARCH}"		
+			   click="{ showSearchWindow() }" />	
+		
+	<mx:Button id="sortAscButton" height="30" toolTip="Sort ASC"
+			   icon="{ICON_SORT}"	
+			   click="{ sort(true) }" />
+			   	
+	<mx:Button id="sortDscButton" height="30" toolTip="Sort DSC"
+			   icon="{ICON_SORT2}"	
+			   click="{ sort(false) }" />
+			   
+	<mx:Array id="fontFamilyArray"> 
+		<mx:String>Arial</mx:String>
+		<mx:String>Courier</mx:String>
+		<mx:String>Courier New</mx:String>
+		<mx:String>Geneva</mx:String>
+		<mx:String>Georgia</mx:String>
+		<mx:String>Helvetica</mx:String>
+		<mx:String>Times New Roman</mx:String>
+		<mx:String>Times</mx:String>
+		<mx:String>Verdana</mx:String>
+		<mx:String>_sans</mx:String>
+		<mx:String>_serif</mx:String>
+		<mx:String>_typewriter</mx:String>
+	</mx:Array>
+	
+	<mx:Array id="fontSizeArray"> 
+		<mx:String>8</mx:String>
+		<mx:String>9</mx:String>
+		<mx:String>10</mx:String>
+		<mx:String>11</mx:String>
+		<mx:String>12</mx:String>
+		<mx:String>14</mx:String>
+		<mx:String>16</mx:String>
+		<mx:String>18</mx:String>
+		<mx:String>20</mx:String>
+		<mx:String>22</mx:String>
+		<mx:String>24</mx:String>
+		<mx:String>26</mx:String>
+		<mx:String>28</mx:String>
+		<mx:String>36</mx:String>
+		<mx:String>48</mx:String>
+		<mx:String>72</mx:String>
+	</mx:Array>
+<mx:Script>
+	<![CDATA[
+		import model.Spreadsheet;
+		import controls.forms.OptionsWindow;
+		import mx.core.IFlexDisplayObject;
+		import mx.core.Application;
+		import mx.core.UIComponent;
+		import mx.managers.PopUpManagerChildList;
+		import controls.forms.SearchWindow;
+		import mx.managers.PopUpManager;
+		import mx.controls.Alert;
+		import controls.BorderedTable;
+			public var fontFamilyToolTip:String = "Font Family";
+	public var fontSizeToolTip:String = "Font Size";
+	public var boldToolTip:String = "Bold";
+	public var italicToolTip:String = "Italic";
+	public var underlineToolTip:String = "Underline";
+	public var colorPickerToolTip:String = "Color";
+	public var alignToolTip:String = "Align";
+	public var bulletToolTip:String = "Bullet";
+	public var linkToolTip:String = "Link";
+
+	private var linkTextCommitted:Boolean = false;
+	private var showControlBarChanged:Boolean = false;
+	private var showToolTipsChanged:Boolean = false;
+	private var textChanged:Boolean = false;
+	private var htmlTextChanged:Boolean = false;
+	private var previousTextFormat:TextFormat = null;
+	private var textFormatChanged:Boolean = false;
+	// -1 is used to force updation of the ToolBar styles
+	private var lastCaretIndex:int = -1;
+	private var invalidateToolBarFlag:Boolean = false;
+	private var firstTime:Boolean = true;
+	
+	[Embed(source="/assets/icons/icon_search.png")]
+    private static const ICON_SEARCH : Class;
+
+	[Embed(source="/assets/icons/icon_sort.png")]
+    private static const ICON_SORT : Class;
+    
+    [Embed(source="/assets/icons/icon_sort2.png")]
+    private static const ICON_SORT2 : Class;
+    
+    [Embed(source="/assets/icons/icon_b.png")]
+    private static const ICON_B : Class;
+    
+    [Embed(source="/assets/icons/icon_i.png")]
+    private static const ICON_I : Class;
+	
+	[Embed(source="/assets/icons/icon_u.png")]
+    private static const ICON_U : Class;
+    
+    [Embed(source="/assets/icons/icon_textleft.png")]
+    private static const ICON_TEXT_LEFT : Class;
+    
+    [Embed(source="/assets/icons/icon_textcenter.png")]
+    private static const ICON_TEXT_CENTER : Class;
+    
+    [Embed(source="/assets/icons/icon_textfull.png")]
+    private static const ICON_TEXT_FULL : Class;
+    
+    [Embed(source="/assets/icons/icon_textright.png")]
+    private static const ICON_TEXT_RIGHT : Class;
+    
+	[Bindable]
+	public var table : BorderedTable;
+	
+	private var popupWindow : IFlexDisplayObject;
+	
+	private var _defaultLinkProtocol:String = "http://";
+
+	[Inspectable(defaultValue="http://")]
+	
+	public function get defaultLinkProtocol():String
+	{
+		return _defaultLinkProtocol;
+	}
+
+	public function set defaultLinkProtocol(value:String):void
+	{
+		_defaultLinkProtocol = value;
+		
+		if (linkTextInput)
+			linkTextInput.text = _defaultLinkProtocol;
+	}
+	
+	private function showSearchWindow():void
+	{
+		popupWindow = PopUpManager.createPopUp(UIComponent(Application.application),SearchWindow, false);
+		(popupWindow as SearchWindow).table = table;
+		PopUpManager.centerPopUp(popupWindow);
+	}
+	
+	private function showOptionsWindow():void
+	{
+		popupWindow = PopUpManager.createPopUp(UIComponent(Application.application),OptionsWindow, true);
+		PopUpManager.centerPopUp(popupWindow);
+	}
+	
+	private function getTextStyles():void
+	{
+		/* if (!textArea)
+			return;
+			
+		var tf:TextFormat;
+
+		var beginIndex:int = textArea.getTextField().selectionBeginIndex;
+		var endIndex:int = textArea.getTextField().selectionEndIndex;
+
+		if (beginIndex == endIndex)
+			linkTextInput.enabled = false;
+		else
+			linkTextInput.enabled = true;	
+			
+		if (textFormatChanged)
+			previousTextFormat = null;
+
+		if (beginIndex == endIndex)
+		{
+			tf = textArea.getTextField().defaultTextFormat;
+			if (tf.url != "")
+			{
+				var carIndex:int = textArea.getTextField().caretIndex;
+				if (carIndex < textArea.getTextField().length)
+				{
+					var tfNext:TextFormat=textArea.getTextField().getTextFormat(carIndex, carIndex + 1);
+					if (!tfNext.url || tfNext.url == "")
+						tf.url = tf.target = "";
+				}
+				else
+					tf.url = tf.target = ""; 
+			}
+		}
+		else
+			tf = textArea.getTextField().getTextFormat(beginIndex,endIndex);
+
+		if (!previousTextFormat || previousTextFormat.font != tf.font)
+			setComboSelection(fontFamilyCombo, tf.font ? tf.font : "");
+		if (!previousTextFormat || previousTextFormat.size != tf.size)
+			setComboSelection(fontSizeCombo, tf.size ? String(tf.size) : "");
+		if (!previousTextFormat || previousTextFormat.color != tf.color)
+			colorPicker.selectedColor = Number(tf.color);
+		
+		if (!previousTextFormat || previousTextFormat.bold != tf.bold)
+			boldButton.selected = tf.bold;
+		if (!previousTextFormat || previousTextFormat.italic != tf.italic)
+			italicButton.selected = tf.italic;
+		if (!previousTextFormat || previousTextFormat.underline != tf.underline)
+			underlineButton.selected = tf.underline;
+
+		if (!previousTextFormat || previousTextFormat.align != tf.align)
+		{
+			if (tf.align == "left")
+				alignButtons.selectedIndex = 0;
+			else if (tf.align == "center")
+				alignButtons.selectedIndex = 1;
+			else if (tf.align == "right")
+				alignButtons.selectedIndex = 2;
+			else if (tf.align == "justify")
+				alignButtons.selectedIndex = 3;
+		}
+		if (!previousTextFormat || previousTextFormat.bullet != tf.bullet)
+			bulletButton.selected = tf.bullet;
+		if (!previousTextFormat || previousTextFormat.url != tf.url)
+			linkTextInput.text = (tf.url == "" || tf.url == null) ? defaultLinkProtocol : tf.url;
+		
+		if (textArea.getTextField().defaultTextFormat != tf)
+			textArea.getTextField().defaultTextFormat = tf;
+		previousTextFormat = tf;
+		textFormatChanged = false;
+		
+		lastCaretIndex = textArea.getTextField().caretIndex;
+		invalidateToolBarFlag = false; */
+	}
+
+	
+	private function setTextStyles(type:String, value:Object = null):void
+	{
+		table.applyStyleToCurrentSelection(type, value);
+	}
+
+	private function sort(asc:Boolean):void
+	{
+		var options:int = asc? 0 : Array.DESCENDING;
+		var s:Spreadsheet = Spreadsheet(table.dataProvider);
+		
+		s.sort(table.table.selectionLayer.makeRectFromIndexes(), options);
+	}		
+	]]>
+</mx:Script>
+	</mx:HBox>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+		  layout="absolute" width="400" height="300"
+		  styleName="login"
+		  title="Advanced Search and Replace">
+	<mx:Button x="335" y="235" label="Close" click="{ onClickClose() }"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import idubee.events.FindEvent;
+			
+			private function onClickClose():void
+			{
+				new FindEvent(FindEvent.CLOSE_SEARCH_ENGINE).dispatch();
+			}
+			
+			private function onStackChanged():void
+			{
+				replaceButtonContainer.visible = (viewstack1.selectedIndex == 1)? true:false
+			}
+			
+			private function onFindAllClick():void
+			{
+				var event : FindEvent = new FindEvent(FindEvent.FIND_ADVANCED);
+				event.what = searchForInputText.text;
+				event.searchIn = searchInComboBox.text;
+				event.where = whereComboBox.text;
+				event.highlightAll = highlightCheckBox.selected;
+				event.matchCase = matchCaseCheckBox.selected;
+				event.dispatch();
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:ToggleButtonBar x="10" y="10" dataProvider="viewstack1"/>
+	<mx:ViewStack x="10" y="38" id="viewstack1" width="374" height="189" change="{ onStackChanged() }">
+		<mx:Canvas label=" Search " width="100%" height="100%">
+			<mx:Label x="10" y="10" text="Search for:"/>
+			<mx:TextInput x="84" y="8" width="280" id="searchForInputText"/>
+			<mx:Label x="10" y="51" text="Search in:"/>
+			<mx:ComboBox x="79" y="49" width="105" id="whereComboBox">
+				<mx:ArrayCollection>
+			         <mx:String>sheet</mx:String>
+         			 <mx:String>workbook</mx:String>
+		        </mx:ArrayCollection>
+			</mx:ComboBox>
+			<mx:CheckBox x="244" y="47" label="Match case" id="matchCaseCheckBox"/>
+			<mx:CheckBox x="244" y="81" label="Highlight all" selected="true" id="highlightCheckBox"/>
+			<mx:Label x="10" y="85" text="Where:"/>
+			<mx:ComboBox x="79" y="83" width="105" id="searchInComboBox">
+				<mx:ArrayCollection>
+			         <mx:String>value</mx:String>
+         			 <mx:String>formula</mx:String>
+         			 <mx:String>comment</mx:String>
+		        </mx:ArrayCollection>
+			</mx:ComboBox>
+		</mx:Canvas>
+		<mx:Canvas label=" Replace " width="100%" height="100%">
+		</mx:Canvas>
+	</mx:ViewStack>
+	<mx:Button x="264" y="235" label="Find next"/>
+	<mx:Button x="206" y="235" label="Find all"/>
+	<mx:HBox id="replaceButtonContainer" x="10" y="235" width="188" height="26" 
+			 horizontalAlign="right" verticalAlign="middle" visible="false">
+		<mx:Button label="Replace all"/>
+		<mx:Button label="Replace"/>
+	</mx:HBox>
+	
+</mx:Panel>

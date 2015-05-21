@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	verticalAlign="middle"
+	horizontalAlign="center"
+	creationComplete="creationHandler()"
+	layout="vertical" xmlns:table="idubee.view.table.*" xmlns:control="idubee.control.*" xmlns:model="idubee.model.*">
+	<mx:Script>
+		<![CDATA[
+			import idubee.model.EditorCtx;
+			import flash.utils.describeType;
+			import idubee.model.Workbook;
+			import mx.managers.CursorManager;
+			import idubee.model.Rect;
+			import idubee.model.ExtTextFormat;
+			import idubee.model.Cell;
+			private var cell:Cell = new Cell;
+			
+			private function creationHandler():void
+			{
+				var ctx:EditorCtx = EditorCtx.ctx;
+				ctx.workbook = work;
+				ctx.table = table;
+			}
+			private function changeHeaderSize():void
+			{
+				table.spreadsheet.setColumnWidth(5, 200);
+				table.spreadsheet.setRowHeight(3, 100);
+				
+				cell.v = "Hello";
+				table.spreadsheet.setCellAt(2,3,cell);
+				
+			}
+			private function keyDownHand(event:KeyboardEvent):void
+			{
+//				trace(event);
+			}
+			private function changeAgain():void
+			{
+				if (!table.spreadsheet.getCellAt(2,3))
+				{
+					table.spreadsheet.setCellAt(2,3, new Cell);
+				}
+				table.spreadsheet.getCellAt(2,3).v = "This is formatted text";
+				table.spreadsheet.setColumnWidth(5, 200);
+				table.spreadsheet.setRowHeight(3, 100);
+				table.spreadsheet.getCellAt(2,3).colSpan = 2;
+				table.spreadsheet.getCellAt(2,3).rowSpan = 2;
+			}
+			private function generateData():void
+			{
+				var r:Rect ;
+				r =  Rect.parse(" c1 ");
+				r =  Rect.parse(" c1:f2 ");
+				var maxx:int = 1000, maxy:int = 1000;
+				CursorManager.setBusyCursor();
+				table.spreadsheet.noEvents = true;
+				for (var x:int = 0; x < maxx; x++)
+				{
+					for (var y:int = 0; y < maxy; y++)
+					{
+						var c:Cell = new Cell;
+						c.v = "("+x+":"+y+")";
+						table.spreadsheet.setCellAt(x,y,c);
+					}
+				}
+				CursorManager.removeBusyCursor();
+				table.spreadsheet.noEvents = false;
+//				table.spreadsheet.setColumnWidth(5, 200);
+//				table.spreadsheet.setRowHeight(3, 100);
+				table.invalidateAll();
+				
+			}
+		]]>
+	</mx:Script>
+	<control:IDBController/>
+	<model:Workbook id="work"/>
+	<table:Table id="table" workbook="{work}" width="90%" height="90%"/>
+	<mx:Button label="Do Million!" click="generateData()"/>
+	<mx:Button label="Add formatted cell" click="changeAgain()"/>
+	<mx:TextInput/>
+</mx:Application>

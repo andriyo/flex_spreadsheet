@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HDividedBox focusEnabled="false"  xmlns:mx="http://www.adobe.com/2006/mxml" 
+	verticalScrollPolicy="off" horizontalScrollPolicy="off" 
+	borderStyle="none" paddingBottom="0" paddingLeft="0" paddingRight="0" 
+	paddingTop="0" height="22" verticalAlign="middle" horizontalAlign="center" 
+	xmlns:model="idubee.model.*" xmlns:table="idubee.view.table.*" 
+	xmlns:code="http://code.google.com/p/flexlib/"
+	creationComplete="creationHandler()" xmlns:containers="flexlib.containers.*" xmlns:controls="flexlib.controls.*">
+	<mx:Metadata>
+		[Event(name="change",type="mx.events.ListEvent")]
+		[Event(name="scroll",type="mx.events.ScrollEvent")]
+	</mx:Metadata>
+	<mx:Script>
+		<![CDATA[
+			import idubee.model.EditorCtx;
+			import mx.collections.ArrayCollection;
+			import mx.events.ItemClickEvent;
+			import flexlib.controls.tabBarClasses.SuperTab;
+			import idubee.events.WorkbookEvent;
+			import flexlib.events.TabReorderEvent;
+			import idubee.model.Workbook;
+			[Bindable]
+			public var spreadsheets:ArrayCollection;
+			[Bindable]
+			private var ctx:EditorCtx; 
+			private function addSheet():void
+			{
+				new WorkbookEvent(WorkbookEvent.ADD_SHEET).dispatch();
+			}
+			private function removeSheet():void
+			{
+				new WorkbookEvent(WorkbookEvent.REMOVE_SHEET).dispatch();
+			}
+			private function selectSheet(event:ItemClickEvent):void
+			{
+				var e:WorkbookEvent = new WorkbookEvent(WorkbookEvent.SELECT_SHEET);
+				e.index = event.index;
+				e.dispatch();
+				callLater(ctx.table.setFocus);	
+			}
+			private function tabsReordered(event:TabReorderEvent):void {
+				var e:WorkbookEvent = new WorkbookEvent(WorkbookEvent.SWAP_SHEETS);
+				e.index = Math.min(event.newIndex, spreadsheets.length - 1);
+				e.relatedIndex = event.oldIndex;
+				e.dispatch();
+			}
+			private function creationHandler():void
+			{
+				ctx = EditorCtx.ctx;
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%" height="20" horizontalGap="0" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" verticalAlign="middle">
+		<mx:LinkButton label="+" styleName="sheetButton" click="addSheet()"/>
+		<mx:LinkButton label="-" styleName="sheetButton" click="removeSheet()"/>
+		<containers:ButtonScrollingCanvas width="100%" height="100%" verticalScrollPolicy="off"
+			leftButtonStyleName="leftButton" buttonWidth="20" rightButtonStyleName="rightButton">
+			<controls:SuperTabBar dragEnabled="true"
+				dropEnabled="true"
+				closePolicy="{SuperTab.CLOSE_NEVER}" 
+				textAlign="left" tabWidth="80"
+				editableTabLabels="true"
+				tabsReordered="tabsReordered(event)"
+				itemClick="selectSheet(event)"
+				selectedIndex="{ctx.workbook.currentSpreadsheet}"
+				width="100%" height="100%"  dataProvider="{spreadsheets}" labelField="name"/>			
+		</containers:ButtonScrollingCanvas>
+		
+	</mx:HBox>
+	
+	<mx:HScrollBar id="hScroll" scroll="dispatchEvent(event)" width="100%" height="20"/>
+</mx:HDividedBox>
