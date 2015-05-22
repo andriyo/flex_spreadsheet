@@ -9,7 +9,8 @@ Adobe/Apache Flex application with advanced Spreadsheet grid component
    3. Formula evaluation
    4. Cell references
    5. Edit operations (copy, cut, paste, multicell fill)
-   6. Fast rendering
+   6. Keyboard navigation
+   7. Fast rendering
  And many more features
 
 This code is not actively supported and published for demo purposes only
